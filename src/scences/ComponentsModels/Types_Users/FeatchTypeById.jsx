@@ -20,12 +20,10 @@ function FeatchRoleById() {
 
   const roletab = useSelector((state) => state.Featch_Types_Users_SliceStore);
   const roles = roletab.storeTypesUsers;
-  console.log("roletab:", roles);
 
   
   const roleId = parseInt(id); // convert id to an integer
   const role = roles.find((item) => item.id === roleId);
-  console.log("roleid:", role);
   
 
 

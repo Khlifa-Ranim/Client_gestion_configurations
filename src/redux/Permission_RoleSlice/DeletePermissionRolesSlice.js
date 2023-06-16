@@ -1,4 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import jwt_decode from "jwt-decode";
+import { toast } from "react-toastify";
+import { message } from "antd";
 
 export const deleteRolePermissions = createAsyncThunk(
   "permission/deletePermissions",
@@ -13,7 +16,22 @@ export const deleteRolePermissions = createAsyncThunk(
         },
       });
       if (response.status === 200) {
-        return { id };
+        toast.success(" Role to Many permissions deleted Successfully")
+        const log = await fetch("http://localhost:5000/logs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            action: `${
+              jwt_decode(localStorage.getItem("token")).username
+            } deleted Role with id: ${id}`,
+          }),
+        });
+        // Refresh the page
+        window.location.reload();
+        return "role to many permissions deleted successfully";
       } else if (response.status === 202) {
         return { id, message: "Nothing deleted" };
       } else if (response.status === 401) {
@@ -26,6 +44,10 @@ export const deleteRolePermissions = createAsyncThunk(
         throw new Error("Internal Server Error");
       }
     } catch (error) {
+      const errorMessage = "Default Role Cannot be Deleted"; // Replace "Custom error message" with your desired error message
+
+      message.error(errorMessage); // Display the custom error message using Ant Design's message component
+    
       return rejectWithValue(error.message);
     }
   }

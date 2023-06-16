@@ -14,14 +14,13 @@ export const fetchUsers = createAsyncThunk("user/fetchUsers", async () => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   };
-  console.log("Fetching users..."); // <-- add this line to log when users are being fetched
 
   const response = await axios.get("http://localhost:5000/users", config);
-  console.log("Users fetched:", response.data); // <-- add this line to log the fetched users
-  console.log(
-    "FetchUserSlice.js",
-    response.data.map((user) => user.id)
-  );
+  // console.log("Users fetched:", response.data); // <-- add this line to log the fetched users
+  // console.log(
+  //   "FetchUserSlice.js",
+  //   response.data.map((user) => user.id)
+  // );
   // return response.data
   return response.data.map((user) => {
     return {

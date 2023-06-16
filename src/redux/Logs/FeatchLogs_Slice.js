@@ -17,11 +17,9 @@ export const featchLogs= createAsyncThunk("logs/FeatchLogs", async () => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   };
-  console.log("Fetching Permissions..."); // <-- add this line to log when Permissions are being fetched
 
   const response = await axios.get("http://localhost:5000/logs", config);
-  console.log("Permissions fetched:", response.data); // <-- add this line to log the fetched users
-   // return response.data
+
 
   return response.data.map((logs) => {
     return {

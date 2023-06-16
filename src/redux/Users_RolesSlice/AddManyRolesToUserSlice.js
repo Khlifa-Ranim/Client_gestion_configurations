@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import jwt_decode from "jwt-decode";
 import { message } from "antd";
+import { toast } from "react-toastify";
 
 export const CreateUsers_Roles = createAsyncThunk(
   "user_id/CreateUsers_Roles",
@@ -22,9 +23,12 @@ export const CreateUsers_Roles = createAsyncThunk(
         message.error(data.message);
         const { error } = await response.json();
         return rejectWithValue(data.error);
+      }    
+      else {
+        toast.success("Roles  added to user successfully");
       }
 
-      
+    
       // ADD LOG
       const log = await fetch("http://localhost:5000/logs", {
         method: "POST",
@@ -33,7 +37,7 @@ export const CreateUsers_Roles = createAsyncThunk(
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
-          action: `${jwt_decode(localStorage.getItem("token")).username} created Many Roles To the User With Id:  <span style="color:red">${user_id}</span>`,
+          action: `${jwt_decode(localStorage.getItem("token")).username} created Many Roles To the User With Id: ${user_id}`  
 
         }),
       });

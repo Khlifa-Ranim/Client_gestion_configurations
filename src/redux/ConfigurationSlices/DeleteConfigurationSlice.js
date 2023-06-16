@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import jwt_decode from "jwt-decode";
+import { toast } from "react-toastify";
 
 export const deleteConfiguration = createAsyncThunk(
   "configuration/deleteConfiguration",
@@ -17,6 +18,7 @@ export const deleteConfiguration = createAsyncThunk(
         }
       );
       if (response.status === 200) {
+        toast.success(" Configuration deleted Successfully")
         const log = await fetch("http://localhost:5000/logs", {
           method: "POST",
           headers: {

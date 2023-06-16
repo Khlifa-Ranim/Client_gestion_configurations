@@ -16,8 +16,7 @@ import {
   fetchRoles_permissions,
   fetchRolesPermission,
 } from "../../../redux/Permission_RoleSlice/FeatchPermission_RoleSlice";
-import { deleteRolesPermissions } from "../../../redux/Permission_RoleSlice/DeleteRole_PermissionsSlise";
-import { deleteRoles } from "../../../redux/RolesSlices/DeleteRoleSlice";
+import { deleteRolePermissions } from "../../../redux/Permission_RoleSlice/DeletePermissionRolesSlice";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -47,9 +46,7 @@ const Role_Permission = () => {
   const sortedTabRoles_Permissions= [...roles_permissions].sort(
     (a, b) => b.id - a.id
   );
-  const notify = () => {
-    toast(" Delete succeed  👌");
-  };
+ 
 
   useEffect(() => {
     dispatch(fetchRoles_permissions());
@@ -66,26 +63,19 @@ const Role_Permission = () => {
     navigate(`/FetchRolesPermissionById/${id}`);
   };
 
-  const getRowId = (row, index) => {
-    return (index + 1).toString();
-  };
-
-  const DeleteRolesPermissionss = (id, permission_ids) => {
-    console.log("delete roleprmission active");
-    // notify(); // display toast notification
-    // dispatch(deleteRolesPermissions(id,permission_ids));
-    console.log("id,permission_ids", id, permission_ids);
-    // navigate("/FetchRoles");
-  };
 
   /************delete***************** */
   const [showDialog, setShowDialog] = useState(false);
-  const DeleteRole = (id) => {
-    console.log("delete Role active");
-    notify(); // display toast notification
-    dispatch(deleteRoles(id))
+  const [selectedRoleId, setSelectedRoleId] = useState(null);
+
+  const DeleteRole = () => {
+    if (selectedRoleId) {
+
+    dispatch(deleteRolePermissions(selectedRoleId))
       .then(() => setRoleDeleted(true)) // set roleDeleted to true after successful deletion
       .catch((error) => console.log(error));
+      setShowDialog(false);
+    }
   };
 
   
@@ -142,11 +132,6 @@ const Role_Permission = () => {
       headerName: "Access Level",
       flex: 1,
       renderCell: ({ row }) => {
-
-        const handleConfirm = () => {
-          setShowDialog(false);
-          DeleteRole(row.id);
-        };
         return (
           <>
             <Button
@@ -164,7 +149,7 @@ const Role_Permission = () => {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => setShowDialog(true)}
+                onClick={() => {setShowDialog(true); setSelectedRoleId(row.id);}}
                 style={{ marginRight: "10px", backgroundColor: "#ff8585" }}
               >
                 Delete
@@ -182,7 +167,7 @@ const Role_Permission = () => {
                 <DialogActions>
                   <Button
                     style={{ marginRight: "10px", backgroundColor: "#A4A9FC" }}
-                    onClick={handleConfirm}
+                    onClick={DeleteRole}
                     autoFocus
                   >
                     Delete
@@ -196,6 +181,18 @@ const Role_Permission = () => {
                 </DialogActions>
               </Dialog>
             </>
+            <Link to={`/EditRolePermission/${row.id}`}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  // setId(row.id)
+                }}
+                style={{ marginRight: "10px" }} // add margin-right inline style
+              >
+                Edit
+              </Button>
+            </Link>
           </>
         );
       },
@@ -268,7 +265,7 @@ const Role_Permission = () => {
                 placeholder="Search With Roles Name..."
               />
             </div>
-            <Link to="/AddPerRoles">
+            {/* <Link to="/AddPerRoles">
               <Button
                 className="button"
                 variant="contained"
@@ -293,7 +290,7 @@ const Role_Permission = () => {
               >
                 Add One permission to a specific Role +
               </Button>
-            </Link>
+            </Link> */}
             <Link to="/Roles_Permissions">
               <Button
                 className="button"
@@ -317,7 +314,7 @@ const Role_Permission = () => {
                   justifyContent: "center",
                 }} // add margin-right inline style
               >
-                Add Many permissions to a specific Role +
+                Add  permissions to a specific Role 
               </Button>
             </Link>
 

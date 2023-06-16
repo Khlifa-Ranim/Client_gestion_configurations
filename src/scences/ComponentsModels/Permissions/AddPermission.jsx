@@ -144,6 +144,7 @@ useEffect(() => {
       type="text"
       class="input"
       value={description}
+      placeholder="Description"
       onChange={(e) => {
        const { name, value } = e.target;
        setdDscription(value);

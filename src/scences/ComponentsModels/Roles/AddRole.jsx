@@ -74,14 +74,14 @@ const AddRole = () => {
           <div className="container" style={{height:"200px", paddingTop:"80px",paddingBottom:"180px"}}>
 
             <form class="form">
-              <p class="title">Add new role </p>
+              <p class="title">Add  role </p>
               <p class="message"> Create New Role</p>
               <label>
                 <input
                   required=""
                   type="text"
                   class="input"
-                  placeholder="Non de Role"
+                  placeholder="Name Role"
                   value={name}
                   onChange={(e) => {
                     const { name, value } = e.target;
@@ -99,7 +99,7 @@ const AddRole = () => {
                   type="text"
                   class="input"
                   value={description}
-                  placeholder="Donner Une Description"
+                  placeholder="Description"
                   onChange={(e) => {
                     const { name, value } = e.target;
                     setDescription(value);

@@ -38,13 +38,7 @@ const Roles = () => {
   );
   console.log("FilterPermission", FilterPermission);
 
-  // const CreateRolePermissionHandle = (e) => {
-  //   e.preventDefault();
-  //     dispatch(CreateRole_Permissions({role_id,permission_id}));
-  //     // notify(); // display toast notification
-  //     // setTimeout(() => navigate('/FetchRoles'), 3000); // redirect after 3 seconds
 
-  // };
 
   useEffect(() => {
     dispatch(fetchRoles());
@@ -109,8 +103,8 @@ const Roles = () => {
             >
               <ToastContainer />
               <form class="form">
-                <p class="title"> Add Many Permissions To A Role</p>
-                <p class="message"> Create Permission to a role</p>
+                <p class="title">  Add  permissions to a specific role </p>
+                <p class="message"> Add Permissions to a role</p>
 
                 <label>
                   <label htmlFor="type"> Select a Roles:</label>
@@ -123,6 +117,7 @@ const Roles = () => {
                       // console.log("id_role:", e.target.value);
                     }}
                   >
+                    <option></option>
                     {filteredRoless.map((role) => (
                       <option key={role.id} value={role.id}>
                         {role.name}

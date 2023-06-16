@@ -17,11 +17,8 @@ export const fetchProfiles = createAsyncThunk("profile/fetchProfiles", async () 
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   };
-  console.log("Fetching profiles..."); // <-- add this line to log when users are being fetched
 
   const response = await axios.get("http://localhost:5000/profiles", config);
-  // console.log("profiles fetched:", response.data); // <-- add this line to log the fetched users
-   // return response.data
 
   return response.data.map((profile) => {
     return {

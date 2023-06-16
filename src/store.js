@@ -13,6 +13,12 @@ import FeatchUsersRolesByIdSlice from "./redux/ConfigurationSlices/Featch_Config
 import CreateAddUserSlice from "./redux/UserSlices/NewUser";
 import LogsStore from "./redux/Logs/FeatchLogs_Slice";
 import FeatchConfigurationversionSlice from "./redux/ConfigurationVersionSlice/FeatchConfigurationVersion";
+import imageSlice from "./redux/ImagesSlice/GetImageSlice";
+import ConversationsSlice from "./redux/ChatApp/FeatchConversations";
+import ConversationsuserSlice from "./redux/ChatApp/FeatchConversationsbyuser";
+import FeatchConfigurationTextByIdSlice from "./redux/ConfigurationSlices/FeatchDocumentConfiguration";
+import FeatchConfigurationversionTextByIdSlice from "./redux/ConfigurationVersionSlice/FeatchDocumentConfigurationVersion";
+import FeatchConfigurationDeafaultByIdSlice from "./redux/ConfigurationSlices/ConfigurationDefaultText"
 
 const store = configureStore({
   reducer: {
@@ -30,6 +36,13 @@ const store = configureStore({
     CreateAddUserSlice: CreateAddUserSlice,
     LogsStore: LogsStore,
     FeatchConfigurationversionStore: FeatchConfigurationversionSlice,
+    imageSlice: imageSlice,
+    ConversationsSlice: ConversationsSlice,
+    ConversationsuserSlice: ConversationsuserSlice,
+    FeatchConfigurationTextByIdSlice: FeatchConfigurationTextByIdSlice,
+    FeatchConfigurationversionTextByIdSlice:FeatchConfigurationversionTextByIdSlice,
+    FeatchConfigurationDeafaultByIdSlice:FeatchConfigurationDeafaultByIdSlice,
+
   },
 });
 export default store;

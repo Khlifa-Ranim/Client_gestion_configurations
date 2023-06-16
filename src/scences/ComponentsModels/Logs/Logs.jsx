@@ -8,12 +8,10 @@ import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 import TimelineDot from "@mui/lab/TimelineDot";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import LaptopMacIcon from "@mui/icons-material/LaptopMac";
-import HotelIcon from "@mui/icons-material/Hotel";
-import RepeatIcon from "@mui/icons-material/Repeat";
 import Typography from "@mui/material/Typography";
 import Sidebar from "../../global/Sidebar";
 import Topbar from "../../global/Topbar";
-import { useEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import { featchLogs } from "../../../redux/Logs/FeatchLogs_Slice";
 import { useDispatch, useSelector } from "react-redux";
 import { red } from "@mui/material/colors";
@@ -23,51 +21,28 @@ import {
   fetchRoles,
   fetchRole,
 } from "../../../redux/RolesSlices/FetchRolesSlice";
-
+import GetAppIcon from "@mui/icons-material/GetApp";
 
 export const CustomizedTimeline = () => {
-
- 
-
-
   const [accessToken, setAccessToken] = useState(localStorage.getItem("token"));
 
   const decoded_token = jwt_decode(accessToken);
-  console.log("decoded_token",decoded_token);
+  console.log("decoded_token", decoded_token);
   const RolesUser = decoded_token.role_id[0];
-
-
-  // const logsAllTable = useSelector((state) => {
-  //     return state.LogsStore;
-    
-  // });
-
-  // const TabLogss = logsAllTable.Logs ; // Use an empty array as the default value
-  // const iduserlogss=TabLogss.map((items)=>items.id_user);
-  // // console.log("TabLogss",TabLogss)
 
   const logs = useSelector((state) => state.LogsStore);
 
-  // const logs = useSelector((state) => state.LogsStore);
   console.log("logsStore", logs);
   const role = useSelector((state) => state.FetchRolsStore);
   const roles = role.Roles;
 
-  const TabLogs = logs.Logs ; // Use an empty array as the default value
+  const TabLogs = logs.Logs; // Use an empty array as the default value
 
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-
-   
   useEffect(() => {
-      dispatch(featchLogs());
-    
+    dispatch(featchLogs());
   }, []);
-
-
-
-
- 
 
   const logsData = JSON.stringify(logs.Logs);
 
@@ -88,18 +63,11 @@ export const CustomizedTimeline = () => {
       log.date.toLowerCase().includes(searchTermLowerCase)
   );
 
-//   useEffect(() => {
-//     if(RolesUser===87)
-//  {  
-//    dispatch(fetchRoles());
-//   }
-//   }, [RolesUser]);
-  
-useEffect(() => {
-  if (RolesUser === 87) {
-    dispatch(fetchRoles());
-  }
-}, [RolesUser]);
+  useEffect(() => {
+    if (RolesUser === 87) {
+      dispatch(fetchRoles());
+    }
+  }, [RolesUser]);
 
   return (
     <div className="app">
@@ -122,15 +90,17 @@ useEffect(() => {
         <div>
           <div>
             <button
+              onClick={downloadLogs}
+              class="buttonn"
               style={{
                 textAlign: "center",
                 marginLeft: "1000px",
-                padding: "18px",
-                width: "200px",
               }}
-              onClick={downloadLogs}
             >
-              Export Logs
+              Export Logs <GetAppIcon />
+              <div class="hoverEffect">
+                <div></div>
+              </div>
             </button>
           </div>
         </div>

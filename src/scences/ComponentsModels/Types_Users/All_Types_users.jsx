@@ -40,14 +40,11 @@ const TypesUsers = () => {
     dispatch(fetchTypes_Users());
   }, []);
 
-  console.log(Tab_Types_Users); // <-- add this line to check the value of user.users
   
   
   const fetchType = (id) => {
-    console.log("fetch one Type User active");
     console.log("roles_permissions:", Tab_Types_Users); // add this line to check the value of roles_permissions
     const selectedPermission = Tab_Types_Users.find((item) => item.id === id);
-    console.log("selectedType", selectedPermission);
     dispatch(featchTypeById(id));
     navigate(`/FetchTypeById/${id}`);
   };
@@ -60,7 +57,6 @@ const TypesUsers = () => {
   };
 
   const DeleteTypesUsers = (id) => {
-    console.log("delete UsersTypes active");
     notify(); // display toast notification
     dispatch(deleteTypes(id));
   };

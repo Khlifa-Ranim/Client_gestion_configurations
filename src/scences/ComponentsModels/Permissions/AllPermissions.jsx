@@ -107,7 +107,7 @@ const Permissions = () => {
     setShowDialog(false);
   };
   const columns = [
-    { field: "id", headerName: "id", flex: 0.5 },
+    { field: "id", headerName: "id", flex: 0.5 ,hide:true},
     {
       field: "endpoint",
       headerName: "endpoint",

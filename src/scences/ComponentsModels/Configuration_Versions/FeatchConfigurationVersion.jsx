@@ -27,6 +27,7 @@ import {
   DialogActions,
 } from "@mui/material";
 
+import { featchConfigurationtextById } from "../../../redux/ConfigurationVersionSlice/FeatchDocumentConfigurationVersion";
 
 const Configuration_version = () => {
   const theme = useTheme();
@@ -46,59 +47,53 @@ const Configuration_version = () => {
     toast(" Delete succeed  👌");
   };
 
-  const Configuration_version = useSelector((state) => state.FeatchConfigurationversionStore);
-  
+  const Configuration_version = useSelector(
+    (state) => state.FeatchConfigurationversionStore
+  );
 
   const tabConfigurationVersion = Configuration_version.TabConfigurationVersion;
 
-
-  const sortedTabVersionConfigurations= [...tabConfigurationVersion].sort(
+  const sortedTabVersionConfigurations = [...tabConfigurationVersion].sort(
     (a, b) => b.id - a.id
   );
-
 
   const rows = Configuration_version.loading
     ? []
     : Configuration_version.error
     ? []
-    : sortedTabVersionConfigurations.map(
-        (configuration, index) => ({
-          id: configuration.id,
-          name: configuration.name,
-          description: configuration.description,
-          value: configuration.value,
-          version: configuration.version,
-          updatedBy: configuration.updatedBy,
-        })
-      )
+    : sortedTabVersionConfigurations.map((configuration, index) => ({
+        id: configuration.id,
+        name: configuration.name,
+        description: configuration.description,
+        value: configuration.value,
+        version: configuration.version,
+        updatedBy: configuration.updatedBy,
+        versionningAt: configuration.versionningAt,
+      }));
 
-      /********Filter Configuration Version with name or value or version************ */
-  
-  
-    const searchTermLowerCase = searchTerm.toLowerCase();
-    const filteredRows = rows.filter(row =>
+  /********Filter Configuration Version with name or value or version************ */
+
+  const searchTermLowerCase = searchTerm.toLowerCase();
+  const filteredRows = rows.filter(
+    (row) =>
       row.name.toLowerCase().includes(searchTermLowerCase) ||
       (row.version && row.version.toString().includes(searchTermLowerCase)) ||
       row.value.toLowerCase().includes(searchTermLowerCase)
-    );
- 
+  );
 
-    /*****************Featch Configuration Versions**************** */
-    useEffect(() => {
-        dispatch(featchConfigurationsVersion());
-      }, []); // run useEffect when roleDeleted changes
-    
+  /*****************Featch Configuration Versions**************** */
+  useEffect(() => {
+    dispatch(featchConfigurationsVersion());
+  }, []); // run useEffect when roleDeleted changes
 
   /*****************Featch Configuration Versions By Id**************** */
 
-    const FeatchVersionConfiguration = (id) => {
-      console.log("fetch one Role active");
-      const selectedRole = tabConfigurationVersion.find((item) => item.id === id);
-      console.log(selectedRole);
-      dispatch(FeatchConfigurationVersionById(id));
-      setShowDetails(true);
-      navigate(`/FeatchConfigurationVersionByID/${id}`);
-    };
+  const FeatchVersionConfiguration = (id) => {
+    const selectedRole = tabConfigurationVersion.find((item) => item.id === id);
+    dispatch(FeatchConfigurationVersionById(id));
+    setShowDetails(true);
+    navigate(`/FeatchConfigurationVersionByID/${id}`);
+  };
 
   /************************delete************* */
   const [showDialog, setShowDialog] = useState(false);
@@ -106,18 +101,25 @@ const Configuration_version = () => {
 
   const handleDelete = () => {
     if (selectedRoleId) {
-    dispatch(deleteConfigurationVersion(selectedRoleId)).then((error) => console.log(error));
-    setShowAlert(true);
-    setShowDialog(false);
-  }
+      dispatch(deleteConfigurationVersion(selectedRoleId)).then((error) =>
+        console.log(error)
+      );
+      setShowAlert(true);
+      setShowDialog(false);
+    }
   };
 
   const handleCancel = () => {
     setShowDialog(false);
   };
+  /*********************Featch_Document_Version******************** */
+  const FeatchConfigurationTextById = (id) => {
+    dispatch(featchConfigurationtextById(id));
+    navigate(`/FeatchConfigurationVersionDocument/${id}`);
+  };
 
   const columns = [
-    { field: "id", headerName: "id", flex: 0.5,hide:true},
+    { field: "id", headerName: "id", flex: 0.5, hide: true },
 
     {
       field: "name",
@@ -138,8 +140,8 @@ const Configuration_version = () => {
       ),
     },
     {
-      field: "value",
-      headerName: "value",
+      field: "version",
+      headerName: "version",
       cellClassName: "centered-cell",
       flex: 0.5,
       renderCell: (params) => (
@@ -147,8 +149,8 @@ const Configuration_version = () => {
       ),
     },
     {
-      field: "version",
-      headerName: "version",
+      field: "versionningAt",
+      headerName: "versionningAt",
       cellClassName: "centered-cell",
       flex: 0.5,
       renderCell: (params) => (
@@ -170,13 +172,16 @@ const Configuration_version = () => {
       headerName: "Access Level",
       flex: 1,
       renderCell: ({ row }) => {
-        const handleConfirm = () => {
-          setShowDialog(false);
-          handleDelete(row.id);
-        };
-
         return (
           <>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => FeatchConfigurationTextById(row.id)}
+              style={{ marginRight: "10px", backgroundColor: "#a8e6cf" }} // add margin-right inline style
+            >
+              Configuration
+            </Button>
             <Button
               variant="contained"
               color="secondary"
@@ -189,8 +194,10 @@ const Configuration_version = () => {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => {setShowDialog(true);
-                  setSelectedRoleId(row.id);}}
+                onClick={() => {
+                  setShowDialog(true);
+                  setSelectedRoleId(row.id);
+                }}
                 style={{ marginRight: "10px", backgroundColor: "#ff8585" }}
               >
                 Delete
@@ -246,7 +253,10 @@ const Configuration_version = () => {
       <div className="content">
         <Topbar />
         <Box m="20px">
-          <Header title="All Versions Configurations" subtitle="List Of Versions Configurations" />
+          <Header
+            title="All Versions Configurations"
+            subtitle="List Of Versions Configurations"
+          />
 
           <Box
             m="40px 0 0 0"
@@ -305,7 +315,6 @@ const Configuration_version = () => {
             </div>
 
             <div>
-
               {/* <Link to="/AddRole">
                 <Button
                   // className="button"

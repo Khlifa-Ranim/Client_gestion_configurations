@@ -39,7 +39,7 @@ function FeatchConfigurationById() {
     <Sidebar/> 
      <div  className="content">
      <Topbar/>
-    <div className="MainContainer2">
+    <div className="MainContainer2" style={{backgroundColor:"white"}}>
       
         <button  onClick={() => BacktoDashboard()} className="back-btn">Back</button>
       
@@ -48,9 +48,7 @@ function FeatchConfigurationById() {
 
     <tr> <p style={{ color: "#ff347f",fontWeight: "bold" }}>Name : </p> {name}</tr>
     <tr> <p style={{ color: "#ff347f",fontWeight: "bold" }}>Description :</p>{description}</tr>
-     <tr> <p style={{ color: "#ff347f",fontWeight: "bold" }}>value: </p>{value}</tr>
      <tr><p style={{ color: "#ff347f",fontWeight: "bold" }}>version: </p>{version}</tr>
-     <tr><p style={{ color: "#ff347f",fontWeight: "bold" }}>defaultValue: </p>{defaultValue}</tr>
      <tr><p style={{ color: "#ff347f",fontWeight: "bold" }}>createdBy: </p>{createdBy}</tr>
      <tr><p style={{ color: "#ff347f",fontWeight: "bold" }}>updatedBy: </p>{updatedBy}</tr>
      <tr><p style={{ color: "#ff347f",fontWeight: "bold" }}>createdAt: </p>{createdAt}</tr>

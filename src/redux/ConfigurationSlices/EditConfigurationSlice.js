@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import jwt_decode from "jwt-decode";
 
-
+import { toast } from "react-toastify";
+import { message } from 'antd';
 export const EditConfiguration = createAsyncThunk(
   "permission/editPermission",
   async (EditConfiguration, { rejectWithValue }) => {
@@ -21,8 +22,12 @@ export const EditConfiguration = createAsyncThunk(
       const data = await response.json();
 
       if (!response.ok) {
+          /**************msg error */
+     message.error(data.message);
+     const { error } = await response.json();
         return rejectWithValue(data.error);
       }
+      else {toast.success("Configuration updated successfully");}
 
       // ADD LOG
       const log = await fetch("http://localhost:5000/logs", {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Topbar from "../../global/Topbar";
 import Sidebar from "../../global/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,8 @@ import "../User/editProfile.css";
 import { useNavigate, useParams } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+import { fetchImageById } from "../../../redux/ImagesSlice/GetImageSlice";
+import { fetchProfiles } from "../../../redux/ProfileSlices/FetchProfileSlice";
 
 const EditProfile = () => {
   const dispatch = useDispatch();
@@ -15,13 +17,10 @@ const EditProfile = () => {
 
   const { id } = useParams(); //take the id from  the router
 
-  // const Configurations = useSelector((state) => state.Featch_Configurations_Store);
-  // console.log("Configurations:", Configurations);
-  // const tabConfigurations = Configurations.TabConfiguration;
-  // console.log("tabConfigurations",tabConfigurations)
-
   const profile = useSelector((state) => state.FetchProfilessStore);
-  console.log("profile:", profile);
+  const Profile = profile.profiles;
+
+
 
   const Tab_profile = profile.profiles;
   console.log("Tab_profile:", Tab_profile);
@@ -40,6 +39,7 @@ const EditProfile = () => {
   const [uploading, setUploading] = useState(false);
   const [open, setOpen] = useState(false);
   const Navigate = useNavigate();
+  const [accessToken, setAccessToken] = useState(localStorage.getItem("token"));
 
 
 
@@ -60,76 +60,27 @@ const EditProfile = () => {
           setTimeout(() => Navigate("/dashboard"), 200); // redirect after 3 seconds
 
   };
+  useEffect(() => {
+    dispatch(fetchProfiles());
+  }, []);
+
+  const ProfileIdMap = {};
+  Profile.forEach((profile) => {
+    ProfileIdMap[profile.user_id] = profile.id;
+  });
+
+  const decoded_token = jwt_decode(accessToken);
+  const profileId = ProfileIdMap[decoded_token.user_id];
+
+  /****************************TImage****************************** */
+const imagep = useSelector((state) => state.imageSlice.image);
+
+useEffect(() => {
+  dispatch(fetchImageById({ id:profileId}));
+}, [dispatch]);
 
 
-  // const Update_Profile = (e) => {
-  //   e.preventDefault();
-  //   console.table(uname, udescription, uadresse, uemail, utelephone);
-  //   if (!imageFile) return;
-  //   setUploading(true);
-  //   axios
-  //     .put(
-  //       "http://localhost:5000/profiles",
-  //       {
-  //         id: id,
-  //         name: uname,
-  //         description: udescription,
-  //         adresse: uadresse,
-  //         email: uemail,
-  //         telephone: utelephone,
-  //         image:"",
-  //       },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     )
-  //     .then((res) => {
-  //       const image = new FormData();
-  //       console.log(res.data);
-  //       image.append("image", imageFile);
-  //       axios
-  //         .put(
-  //           "http://localhost:5000/profile/upload/image/" + res.data.id,
-  //           image
-  //         )
-  //         .then((res) => {
-  //           // notify(); // display toast notification
-  //           setOpen(false);
-  //           // Notification code
-  //         })
-  //         .catch((err) => console.log("error"));
 
-  //       axios
-  //         .post(
-  //           "http://localhost:5000/logs",
-  //           JSON.stringify({
-  //             action: `${
-  //               jwt_decode(localStorage.getItem("token")).username
-  //             } created an profile for ${
-  //               jwt_decode(localStorage.getItem("token")).username
-  //             }`,
-  //           }),
-  //           {
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //               Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //             },
-  //           }
-  //         )
-  //         .then((res) => {
-  //           console.log(res.data);
-  //         })
-  //         .catch((err) => {
-  //           console.log(err);
-  //         });
-  //     })
-  //     .catch((err) => {});
-  // };
-
-  
   return (
     <>
       <div className="app">
@@ -142,6 +93,8 @@ const EditProfile = () => {
 
             <form class="form1">
               <div class="input-group">
+
+        
                 <input
                   id="file"
                   type="file"
@@ -159,7 +112,7 @@ const EditProfile = () => {
                   }}
                 />
                 <label class="avatar" for="file">
-                  <span>
+                  {/* <span>
                     {" "}
                     <svg
                       id="svg"
@@ -203,7 +156,15 @@ const EditProfile = () => {
                         ></path>{" "}
                       </g>
                     </svg>
-                  </span>
+                  </span> */}
+                        <img
+                  alt="profile-user"
+                  width="100px"
+                  height="100px"
+                  src={imagep}
+                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                
+                />
                 </label>
                 {/* <button onClick={Upload_Image()}>upload Image</button> */}
               </div>

@@ -8,8 +8,10 @@ import Topbar from "../../global/Topbar";
 import Sidebar from "../../global/Sidebar";
 import "../User/NewUser.css";
 import { Multiselect } from "multiselect-react-dropdown";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {
+  fetchRoles_permissions,
+} from "../../../redux/Permission_RoleSlice/FeatchPermission_RoleSlice";
 
 const UsersRoles = () => {
   const dispatch = useDispatch();
@@ -22,7 +24,12 @@ const UsersRoles = () => {
   const role = useSelector((state) => state.FetchRolsStore);
   const roles = role.Roles;
 
-  const filteredRoles = roles.filter((role) => role.name);
+  const role_permission = useSelector(
+    (state) => state.FetchRoles_PermissionsStore
+  );
+  const roles_permissions = role_permission.Permissions_Roles;
+
+  const filteredRoles = roles_permissions.filter((role) => role.role_name);
   console.log("filteredRolessss", filteredRoles);
 
  const Navigate=useNavigate();
@@ -41,6 +48,10 @@ const UsersRoles = () => {
     dispatch(fetchRoles());
   }, []); 
 
+  
+  useEffect(() => {
+    dispatch(fetchRoles_permissions());
+  }, []);
   useEffect(() => {
     dispatch(fetchUsers());
   }, []);
@@ -54,7 +65,8 @@ console.log( "RolesIds",RolesIds)
     dispatch(CreateUsers_Roles({
       role_ids:RolesIds,
       user_id:user_id.user_id }))
-       
+      setTimeout(() => Navigate("/FeatchRolesUsers"), 1000); // redirect after 3 seconds
+
     console.log("user_id, RolesIds",user_id.user_id , RolesIds )
   };
 
@@ -71,10 +83,10 @@ console.log( "RolesIds",RolesIds)
   const handleSelectRoleAll = () => {
     if (selectAlll) {
       // unselect all options
-      setRole_ids(Number([]));
+      setRole_ids([])
     } else {
       // select all options
-      setRole_ids(filteredRoles.map((role) => role.name));
+      setRole_ids(filteredRoles.map((role) => ({role_name:role.role_name,id:role.id})));
     }
     // toggle select all option
     setSelectAlll(!selectAlll);
@@ -90,8 +102,8 @@ console.log( "RolesIds",RolesIds)
           <div className="container" style={{height:"200px", paddingTop:"80px",paddingBottom:"180px"}}>
 
 <form class="form">
-                <p class="title">Add Many Roles To User </p>
-                <p class="message"> Create Relation Many Roles To A User</p>
+                <p class="title">    Add  Roles to a specific User </p>
+                <p class="message">    Add  Roles to  User</p>
 
                 <label>
                   <label htmlFor="type"> Select User :</label>
@@ -103,6 +115,7 @@ console.log( "RolesIds",RolesIds)
                       setUser_id({user_id:Number (e.target.value)})
                     }}
                   >
+                    <option></option>
                     {FiltterAllUsers.map((user) => (
                     <option key={user.id} value={user.id}
                    >
@@ -128,7 +141,7 @@ console.log( "RolesIds",RolesIds)
                       });
                     }}
                     value={role.id} 
-                    displayValue="name"
+                    displayValue="role_name"
                   />
                 </label>
 

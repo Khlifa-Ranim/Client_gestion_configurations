@@ -34,7 +34,6 @@ const EditRole = () => {
 
   const EditRoleHandle = (e) => {
     e.preventDefault();
-    console.table(uName, UDescription);
 
     setFromErrors(validate(uName, UDescription));
     setIsSubmit(true);
@@ -53,7 +52,6 @@ const EditRole = () => {
     const errors = {};
 
     const name_pattern = /^[a-zA-Z\s]*$/;
-    const description_pattern = /^[a-zA-Z\s'éèêàùîôç-]*$/;
 
     if (!uName) {
       errors.uName = "Name is Required";

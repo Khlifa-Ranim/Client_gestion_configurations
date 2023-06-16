@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../theme";
 import Header from "../../../components/Header";
@@ -20,6 +20,7 @@ import { banUsers } from "../../../redux/UserSlices/BanUser";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Switch } from "antd";
 
 import {
   Dialog,
@@ -39,15 +40,15 @@ const Users = () => {
     toast(" User Disabled Succefully 👌");
   };
 
-  const notifyEnable = () => {
-    toast(" User Enabeled Succefully 👌");
-  };
+ 
 
   const user = useSelector((state) => state.FetchUsersStore);
 
   const Users = user.users;
-  console.log(Users);
 
+
+
+  
   const sortedTabUsers= [...Users].sort(
     (a, b) => b.id - a.id
   );
@@ -84,7 +85,6 @@ const Users = () => {
 
   const DeleteUser = () => {
     if (selectedRoleId) {
-    console.log("delete user active");
     dispatch(deleteUsers(selectedRoleId)).then((error) => console.log(error));
     notifydelete();
     setShowDialog(false);
@@ -98,85 +98,62 @@ const Users = () => {
   const fetchUserr = (id) => {
     console.log("fetch one user active");
     const selectedUser = Users.find((item) => item.id === id);
-    console.log(selectedUser);
     dispatch(fetchUser(id));
-    // setShowDetails(true);
     navigate(`/FetchUserById/${id}`);
   };
 
   /************Ban************** */
-  const [showDialogban, setShowDialogban] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-
-  const [disabledButtons, setDisabledButtons] = useState(
-    JSON.parse(localStorage.getItem("disabledButtons")) || {}
-  );
-
-  const Colors = {
-    false: "#ff8585",
-    true: "#eb2632",
-  };
-
-  useEffect(() => {
-    localStorage.setItem("disabledButtons", JSON.stringify(disabledButtons));
-  }, [disabledButtons]);
 
 
 
-  const BanUser = () => {
-    const selectedUser = Users.find((item) => item.selectedUserId === selectedUserId);
-    console.log(selectedUser);
-    if (selectedUserId) {
+/************************************* */
 
+const [selectedUserId, setSelectedUserId] = useState(
+  localStorage.getItem('selectedUserId') || null
+);
+const [showDialogban, setShowDialogban] = useState(
+  localStorage.getItem('showDialogban') === 'true' || false
+);
+const [toggle, setToggle] = useState(
+  localStorage.getItem('toggle') === 'true' || false
+);
+
+const [userToggle, setUserToggle] = useState({});
+
+const BanUser = () => {
+  const selectedUser = Users.find((item) => item.selectedUserId === selectedUserId);
+  console.log(selectedUser);
+
+  if (selectedUserId) {
     dispatch(banUsers(selectedUserId)).then((error) => console.log(error));
-    notifyBand(); // display toast notification
-setShowDialogban();
-    setDisabledButtons((prev) => {
-      if (!prev.hasOwnProperty(selectedUserId)) {
-        // create a new object if the id property does not exist in prev
-        return {
-          ...prev,
-          [selectedUserId]: {
-            disabled: true,
-            color: Colors.true,
-          },
-        };
-      } else {
-        // update the existing object for the selected user
-        return {
-          ...prev,
-          [selectedUserId]: {
-            ...prev[selectedUserId],
-            disabled: !prev[selectedUserId].disabled,
-            color: Colors[!prev[selectedUserId].disabled],
-          },
-        };
-      }
-    });}
-  };
 
-  const handleCancelban = () => {
-    setShowDialogban(false);
-  };
+    setToggle((prevState) => {
+      const newState = { ...prevState };
+      newState[selectedUserId] = !prevState[selectedUserId];
+      localStorage.setItem('toggle', newState.toString()); // Update local storage
+      return newState;
+    });
 
-  /***************UnBanUser************* */
+    notifyBand(); // Display toast notification
+    setShowDialogban(false); // Close the dialog
+  }
 
-  const [showDialogunban, setShowDialogunban] = useState(false);
-const[selectedUserUnban,setSelectedUserUnban]=useState(null)
-  const UnBanUser = () => {
-    if (selectedUserUnban) {
+  // Update the local storage with the latest state
+  localStorage.setItem('selectedUserId', selectedUserId);
+  localStorage.setItem('showDialogban', 'false');
+};
 
-    // const selectedUser = Users.find((item) => item.id === id);
-    // console.log(selectedUserUnban);
-    dispatch(banUsers(selectedUserUnban));
-    notifyEnable();
-    setShowDialogunban(false);
+const handleCancelban = () => {
+  setShowDialogban(false);
+  setSelectedUserId(null);
 
-  };}
+  // Update the local storage with the latest state
+  localStorage.setItem('showDialogban', 'false');
+  localStorage.removeItem('toggle');
+};
 
-  const handleCancelUnban = () => {
-    setShowDialogunban(false);
-  };
+
+  
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5, hide: true },
@@ -208,24 +185,9 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
       headerName: "Access Level",
       flex: 1,
       renderCell: ({ row }) => {
-        const handleConfirm = () => {
-          setShowDialog(false);
-          DeleteUser(row.id);
-        };
+   
 
-        const handleConfirmban = () => {
-          setShowDialogban(false);
-          BanUser(row.id);
-        };
-
-        const handleConfirmunban = () => {
-          setShowDialogunban(false);
-          UnBanUser(row.id);
-        };
-
-        const buttonColor = disabledButtons[row.id]?.color || "#ff8585";
-        const isDisabled = disabledButtons[row.id]?.disabled || false;
-
+     
         return (
           <>
             <Button
@@ -274,7 +236,7 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
                 </DialogActions>
               </Dialog>
             </>
-            <Link to={`/EditUser/${row.id}`}>
+            {/* <Link to={`/EditUser/${row.id}`}>
               <Button
                 variant="contained"
                 color="primary"
@@ -282,20 +244,25 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
               >
                 Edit
               </Button>
-            </Link>
-
+            </Link> */}
+            {/* <div>
+          <Switch onClick={UnBanUser}/>
+          {toogle? <span>active</span>: <span>disactive</span>}
+        </div> */}
             <>
-              <Button
+       
+              <Switch
                 variant="contained"
                 color="secondary"
+                checked={userToggle[row.id]}
+                checkedChildren="blocked"
+                unCheckedChildren="unblocked"
                 onClick={() => { setShowDialogban(true);
                   setSelectedUserId(row.id);}
                 }
-                style={{ marginRight: "10px", backgroundColor: buttonColor }}
-                disabled={isDisabled}
-              >
-                {isDisabled ? "Enable" : "Disable"}
-              </Button>
+                // style={{ marginRight: "10px", backgroundColor: buttonColor }}
+              />
+
 
               <Dialog open={showDialogban} onClose={handleCancelban}>
                 <DialogTitle
@@ -306,15 +273,15 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
                 <DialogContent style={{ fontSize: "18px" }}>
                   Confirm Ban
                 </DialogContent>
-                <DialogActions>
+                <DialogActions> <div>
                   <Button
                     style={{ marginRight: "10px", backgroundColor: "#A4A9FC" }}
                     onClick={BanUser}
                     autoFocus
-                    disabled={isDisabled}
                   >
-                    {isDisabled ? "Enable" : "Disable"}
+                     Disable
                   </Button>
+                  </div>
                   <Button
                     style={{ marginRight: "10px", backgroundColor: "#ff8585" }}
                     onClick={handleCancelban}
@@ -324,7 +291,7 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
                 </DialogActions>
               </Dialog>
    
-              <Button
+              {/* <Button
                 variant="contained"
                 color="secondary"
                 onClick={() => {setShowDialogunban(true);setSelectedUserUnban(row.id)}}
@@ -356,7 +323,7 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
                     Cancel
                   </Button>
                 </DialogActions>
-              </Dialog>
+              </Dialog> */}
             </>
           </>
         );
@@ -369,6 +336,9 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
       <Sidebar />
       <div className="content">
         <Topbar />
+        <ToastContainer />
+        <div className="animated-background">
+
         <Box m="20px">
           <Header title="Users" subtitle="List Of All Users" />
           <Box
@@ -403,7 +373,6 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
               },
             }}
           >
-            <ToastContainer />
             <div style={{ position: "relative" }}>
               <input
                 value={searchTerm}
@@ -434,7 +403,8 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
                   marginLeft: "400px",
                   display: "flex",
                   justifyContent: "center",
-                  background:"#8A8FF7",
+                  background:"#61D3C9",
+                  color:"black"
                 }} // add margin-right inline style
               >
                 <svg
@@ -461,6 +431,8 @@ const[selectedUserUnban,setSelectedUserUnban]=useState(null)
           </Box>
         </Box>
       </div>
+            </div>
+
     </div>
   );
 };

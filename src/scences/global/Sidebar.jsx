@@ -18,9 +18,11 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { fetchRoles } from "../../redux/RolesSlices/FetchRolesSlice";
 import { fetchTypes_Users } from "../../redux/Types_UsersSlices/Featch_Types_Users";
 import { fetchProfiles } from "../../redux/ProfileSlices/FetchProfileSlice";
+import { fetchImageById } from "../../redux/ImagesSlice/GetImageSlice";
 
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -52,29 +54,15 @@ const Sidebar = () => {
   // console.log("decoded_token",decoded_token);
   // console.log("Username",decoded_token.username);
 
-
   const role = useSelector((state) => state.FetchRolsStore);
-  // console.log("role:", role.Roles);
   const roles = role.Roles;
-
-  const TypesUsers = useSelector(
-    (state) => state.Featch_Types_Users_SliceStore
-  );
-  const Tab_Types_Users = TypesUsers.storeTypesUsers;
-  // console.log("Tab_Types_Users:", Tab_Types_Users);
 
   const profile = useSelector((state) => state.FetchProfilessStore);
   const Profile = profile.profiles;
-  // console.log("Profiles:",profile.profiles)
 
   const roleNamesMap = {};
   roles.forEach((role) => {
     roleNamesMap[role.id] = role.name;
-  });
-
-  const typeNameMap = {};
-  Tab_Types_Users.forEach((type) => {
-    typeNameMap[type.id] = type.name;
   });
 
   const ProfileIdMap = {};
@@ -89,18 +77,25 @@ const Sidebar = () => {
   }, []); // run useEffect when roleDeleted changes
 
   useEffect(() => {
-    dispatch(fetchTypes_Users());
-  }, []);
-
-  useEffect(() => {
     dispatch(fetchProfiles());
   }, []);
-
-  const TypesNames = typeNameMap[decoded_token.type_id];
 
   const roleNames = decoded_token.role_id.map((roleId) => roleNamesMap[roleId]);
 
   const profileId = ProfileIdMap[decoded_token.user_id];
+
+  /****************************TImage****************************** */
+  const image = useSelector((state) => state.imageSlice.image);
+
+  // useEffect(() => {
+  //   dispatch(fetchImageById({ id:profileId}));
+  // }, [dispatch]);
+
+  useEffect(() => {
+    if (!image) {
+      dispatch(fetchImageById({ id: profileId }));
+    }
+  }, [dispatch, profileId, image]);
 
   return (
     <Box
@@ -140,11 +135,11 @@ const Sidebar = () => {
                 alignItems="center"
                 ml="15px"
               >
-                <Typography variant="h4" color={"#ff347f"} fontWeight="bold">
+                {/* <Typography variant="h4" color={"#ff347f"} fontWeight="bold">
                   TYPE_USER:
                   <br></br>
                   {TypesNames}
-                </Typography>
+                </Typography> */}
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -158,26 +153,20 @@ const Sidebar = () => {
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src={`../../assets/User.jpg`}
+                  src={image}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                   onClick={() => {
                     Navigate(`/EditProfile/${profileId}`);
                   }}
                 />
+                {/* Your other component code */}
+
+                <div></div>
               </Box>
 
               <Box textAlign="center">
                 <div>
-                  {/* <Typography variant="h2" color={colors.grey[100]} fontWeight="bold" sx={{m:"10px 0 0 0"}}>
-      {profileId === decoded_token.user_id ? decoded_token.username : ''}
-    </Typography> */}
-                  <Typography
-                    variant="h5"
-                    color={colors.grey[100]}
-                    sx={{ m: "10px 0 0 0" }}
-                  >
-                    Profile ID: {profileId}
-                  </Typography>
+      
                 </div>
                 <Typography
                   variant="h2"
@@ -226,15 +215,126 @@ const Sidebar = () => {
             >
               Data
             </Typography>
+
+            {roleNames.includes("Admin") && (
+              <>
+                <Item
+                  title="Users Management"
+                  to="/FetchUser"
+                  icon={<PersonOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Profiles Management"
+                  to="/FetchProfiles"
+                  icon={<PersonOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Roles management"
+                  to="/FetchRoles"
+                  icon={<PersonOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Permissions Management"
+                  to="/FetchPermissions"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Roles-permission management"
+                  to="/FeatchRole_Permission"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Roles-user management"
+                  to="/FeatchRolesUsers"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Management Configuration"
+                  to="/FeatchConfigurations"
+                  icon={<ReceiptOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+
+                <Item
+                  title="Configuration Version Management"
+                  to="/FeatchConfigurationVersion"
+                  icon={<ReceiptOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </>
+            )}
+             {roleNames.includes("Employe") && (
+              <>
+             
+                <Item
+                  title="Roles management"
+                  to="/FetchRoles"
+                  icon={<PersonOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Permissions Management"
+                  to="/FetchPermissions"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Roles-permission management"
+                  to="/FeatchRole_Permission"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Roles-user management"
+                  to="/FeatchRolesUsers"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+        
+              </>
+            )}
+
+          {roleNames.includes("Client") && (
+              <>
+
+                <Item
+                  title="Management Configuration"
+                  to="/FeatchConfigurations"
+                  icon={<ReceiptOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+
+                <Item
+                  title="Configuration Version Management"
+                  to="/FeatchConfigurationVersion"
+                  icon={<ReceiptOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </>
+            )}
+
             {/* <Item
-                title=" Gestion des Utilisateurs"
-                to="/team"
-                icon={<PeopleOutlinedIcon/>}
-                selected={selected}
-                setSelected={setSelected}
-                /> */}
-            <Item
-              title="Gestion des Utilisateurs"
+              title="Users Management"
               to="/FetchUser"
               icon={<PersonOutlinedIcon />}
               selected={selected}
@@ -242,76 +342,57 @@ const Sidebar = () => {
             />
 
             <Item
-              title="Gestion des Profiles"
+              title="Profiles Management"
               to="/FetchProfiles"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Gestion Des Roles"
+              title="Roles management"
               to="/FetchRoles"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Gestion Des Permissons"
+              title="Permissions Management"
               to="/FetchPermissions"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Gestion Des Roles-permission"
+              title="Roles-permission management"
               to="/FeatchRole_Permission"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Gestion Des Users Roles"
+              title="Roles-user management"
               to="/FeatchRolesUsers"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Item
-              title="Gestion Des Types Des Utilisateurs"
-              to="/FeatchTypesUsers"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
+      
             <Item
-              title="Gestion Of Configuration"
+              title="Management Configuration"
               to="/FeatchConfigurations"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
              <Item
-              title="Gestion Of Versions Configurations"
+              title="Configuration Version Management"
               to="/FeatchConfigurationVersion"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            
-            {/* <Item
-                title="Gestion des permissions"
-                to="/contacts"
-                icon={<ContactsOutlinedIcon/>}
-                selected={selected}
-                setSelected={setSelected}
-                /> 
-                 <Item
-                title="Gestion Des Roles"
-                to="/invoices"
-                icon={<ReceiptOutlinedIcon/>}
-                selected={selected}
-                setSelected={setSelected}
-                /> */}
+             */}
+
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -319,20 +400,6 @@ const Sidebar = () => {
             >
               Pages
             </Typography>
-            {/* <Item
-              title="Modifier profile"
-              to="/form"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {/* <Item
-              title="Creer  un utilisatur"
-              to="/newUser"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
 
             <Item
               title="Calender"
@@ -348,7 +415,29 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Typography
+
+            {/* <Item
+              title="Gestion Des Types Des Utilisateurs"
+              to="/FeatchTypesUsers"
+              icon={<ContactsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            /> */}
+            {/* <Item
+                title="Gestion des permissions"
+                to="/contacts"
+                icon={<ContactsOutlinedIcon/>}
+                selected={selected}
+                setSelected={setSelected}
+                /> 
+                 <Item
+                title="Gestion Des Roles"
+                to="/invoices"
+                icon={<ReceiptOutlinedIcon/>}
+                selected={selected}
+                setSelected={setSelected}
+                /> */}
+            {/* <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
@@ -383,7 +472,7 @@ const Sidebar = () => {
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
           </Box>
         </Menu>
       </ProSidebar>

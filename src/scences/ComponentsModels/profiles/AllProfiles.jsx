@@ -15,6 +15,18 @@ import {
   featchProfileById,
 } from "../../../redux/ProfileSlices/FetchProfileSlice";
 import { deleteProfile } from "../../../redux/ProfileSlices/DeleteProfile_Slice";
+import { fetchImageById } from "../../../redux/ImagesSlice/GetImageSlice";
+
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Profiles = () => {
   const theme = useTheme();
@@ -23,9 +35,7 @@ const Profiles = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.FetchProfilessStore);
   const Profile = profile.profiles;
-  console.log("Profiles:", profile.profiles);
-  console.log("Profiles:", Profile);
-  console.log("adresse:", Profile.adresse);
+
 
   const [roleDeleted, setRoleDeleted] = useState(false); // state variable to keep track of deleted role
 
@@ -60,34 +70,132 @@ const Profiles = () => {
   useEffect(() => {
     dispatch(fetchProfiles());
   }, []);
-  console.log("Getprofiles.jsx");
 
-  console.log(profile.profiles); // <-- add this line to check the value of profile.uprofiles
 
   const FetchProfile = (id) => {
-    console.log("fetch one Role active");
-    const selectedProfile = Profile.find((item) => item.id === id);
-    console.log(selectedProfile);
     dispatch(featchProfileById(id));
     navigate(`/FeachProfileId/${id}`);
   };
 
-  const DeleteProfile = (id) => {
-    console.log("delete Profile active");
-    dispatch(deleteProfile(id))
+
+  const image = useSelector((state) => state.imageSlice.image);
+
+  
+  
+
+
+
+/**********************Delete Profile********************** */
+const [showDialog, setShowDialog] = useState(false);
+const [selectedRoleId, setSelectedRoleId] = useState(null);
+
+
+const notifydelete = () => {
+  toast("Profile Deleted Succefully👌");
+};
+  const DeleteProfile = () => {
+    dispatch(deleteProfile(selectedRoleId))
       .then(() => setRoleDeleted(true)) // set roleDeleted to true after successful deletion
       .catch((error) => console.log(error));
+      notifydelete();
+      setShowDialog(false);
   };
 
+  const handleCancel = () => {
+    setShowDialog(false);
+  };
+
+
+  /****************ImageProfile************** */
+
+
+  const ImageCell = ({ row }) => {
+    const dispatch = useDispatch();
+    const profileId = row.id;
+  
+    useEffect(() => {
+      if (profileId) {
+        dispatch(fetchImageById({ id: profileId }));
+      }
+    }, [dispatch, profileId]);
+  
+    const image = useSelector((state) => state.imageSlice.image);
+  
+    return (
+      <img
+        alt="profile-user"
+        width="100px"
+        height="100px"
+        src={image}
+        style={{ cursor: "pointer", borderRadius: "50%" }}
+      />
+    );
+  };
+  
+  
+  const RenderCell = ({ row }) => {
+ 
+    return (
+      <>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => FetchProfile(row.id)}
+          style={{ marginRight: "10px", backgroundColor: "#a8e6cf" }}
+        >
+          Read
+        </Button>
+        <>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              setShowDialog(true);
+              setSelectedRoleId(row.id);
+            }}
+            style={{ marginRight: "10px", backgroundColor: "#ff8585" }}
+          >
+            Delete
+          </Button>
+  
+          <Dialog open={showDialog} onClose={handleCancel}>
+            <DialogTitle
+              style={{ fontSize: "20px", backgroundColor: "#ff8585" }}
+            >
+              Are you sure you want to delete this Profile?
+            </DialogTitle>
+            <DialogContent style={{ fontSize: "18px" }}>
+              Confirm Delete
+            </DialogContent>
+            <DialogActions>
+              <Button
+                style={{ marginRight: "10px", backgroundColor: "#A4A9FC" }}
+                onClick={DeleteProfile}
+                autoFocus
+              >
+                Delete
+              </Button>
+              <Button
+                style={{ marginRight: "10px", backgroundColor: "#ff8585" }}
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      </>
+    );
+  };
+  
   const columns = [
     {
-      field: "user_id",
-      headerName: "User_Id",
+      field: "id",
+      headerName: "id",
       flex: 1,
       cellClassName: "name-column--cell",
-      hide: true,
+      hide:true,
     },
-
     {
       field: "name",
       headerName: "Name",
@@ -97,7 +205,6 @@ const Profiles = () => {
         <div style={{ fontSize: "14px", color: "black" }}>{params.value}</div>
       ),
     },
-
     {
       field: "email",
       headerName: "Email",
@@ -114,56 +221,36 @@ const Profiles = () => {
       flex: 1,
       cellClassName: "name-column--cell",
     },
-    {
-      field: "image",
-      headerName: "Image",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-
+    // {
+    //   field: "image",
+    //   headerName: "Image",
+    //   flex: 1,
+    //   cellClassName: "name-column--cell",
+    //   renderCell: ImageCell,
+    // },
     {
       field: "telephone",
       headerName: "Telephone",
       flex: 1,
       cellClassName: "name-column--cell",
     },
-
     {
       field: "accessLevel",
       headerName: "Access Level",
       flex: 1,
       cellClassName: "name-column--cell",
-
-      renderCell: ({ row }) => {
-        return (
-          <>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => FetchProfile(row.id)}
-              style={{ marginRight: "10px", backgroundColor: "#a8e6cf" }} // add margin-right inline style
-            >
-              Read
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => DeleteProfile(row.id)}
-              style={{ backgroundColor: "#FFC0CB" }} // add margin-right inline style
-            >
-              Delete
-            </Button>
-          </>
-        );
-      },
+      renderCell: ({ row }) => <RenderCell row={row} />,
     },
   ];
-
+  
+  
+  
   return (
     <div className="app">
       <Sidebar />
       <div className="content">
         <Topbar />
+        <ToastContainer />
         <Box m="20px">
           <Header title="All Profiles" subtitle="List Of All Profiles" />
           <Box

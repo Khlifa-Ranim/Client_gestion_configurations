@@ -6,6 +6,7 @@ import { EditConfiguration } from "../../../redux/ConfigurationSlices/EditConfig
 import "../User/NewUser.css";
 import jwt_decode from "jwt-decode";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const EditPermission = () => {
   const dispatch = useDispatch();
@@ -25,25 +26,33 @@ const EditPermission = () => {
   const { defaultValue, name, description, value, version } =
     existingPermission[0];
   const [accessToken, setAccessToken] = useState(localStorage.getItem("token"));
-  const [udefaultValue, setUdefaultValue] = useState(defaultValue);
   const [uname, setUname] = useState(name);
-  const [udescription, setUdscription] = useState(description);
-  const [uvalue, setUvalue] = useState(value);
+  const [udescription, setUdescription] = useState(description);
   const [uversion, setUversion] = useState(version);
+
+  const [formErrors, setFromErrors] = useState({});
+
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const Update_Configuraion_Handel = (e) => {
     e.preventDefault();
 
     const decoded_token = jwt_decode(accessToken);
     const user_id = decoded_token.user_id;
-    console.log("user_id", decoded_token.user_id);
 
-    console.table(udefaultValue, uname, udescription, uvalue, uversion);
+    setFromErrors (validate(uname,udescription));
+    setIsSubmit(true);
+  
+    if (
+      Object.keys(formErrors).length === 0 &&
+      uname.trim() !== "" &&
+      udescription.trim() !== "" 
+        ) {
     dispatch(
       EditConfiguration({
         id: id,
-        defaultValue: udefaultValue,
-        name,
+        defaultValue,
+        name:uname,
         description: udescription,
         value,
         version,
@@ -51,7 +60,30 @@ const EditPermission = () => {
       })
     );
     setTimeout(() => Navigate("/FeatchConfigurations"), 22); // redirect after 3 seconds
+  }};
+
+  const handleClick = () => {
+    alert('⚠️ Input is non-changeable Only the name and the description can be modified in the configuration ⛔   ');
   };
+
+  const validate = (uname,udescription) => {
+    const errors = {};
+
+    if (!uname) {
+      errors.uname = "Name is Required";
+    } 
+    if (!udescription) {
+      errors.udescription = "Description is Required";
+    } 
+    return errors;
+  };
+
+  
+  useEffect(() => {
+    if (Object.keys(formErrors).length > 0 && isSubmit) {
+      console.log(formErrors);
+    }
+  }, [formErrors, isSubmit]);
 
   return (
     <>
@@ -62,60 +94,48 @@ const EditPermission = () => {
 
           <div
             className="container"
-            style={{ paddingTop: "80px", paddingBottom: "180px" }}
+            style={{ paddingTop: "80px", paddingBottom: "180px", }}
           >
             <form class="form">
               <p class="title">Update Configuration</p>
               <p class="message">
-                {" "}
-                Update this Configuration only Description and default Value
+
+                Only the name and the description  can be modified in the configuration
               </p>
               <label>
                 <input
-                  required=""
                   type="text"
                   class="input"
                   value={uname}
                   placeholder="Update Name"
-                  // onChange={(e) => setUname(e.target.value)}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    setUname(value);
+                    setFromErrors({ ...formErrors, [name]: value });
+                  }}
                 />
                 <span>Name</span>
+                <p style={{ color: "red" }}>{formErrors.uname}</p>
+
               </label>
 
               <label>
                 <input
-                  required=""
                   type="text"
                   class="input"
                   value={udescription}
                   placeholder="Update Description"
-                  onChange={(e) => setUdscription(e.target.value)}
+                  onChange={(e) => {
+                    const { name, value } = e.target;
+                    setUdescription(value);
+                    setFromErrors({ ...formErrors, [name]: value });
+                  }}
                 />
                 <span>Description</span>
+                <p style={{ color: "red" }}>{formErrors.udescription}</p>
+
               </label>
 
-              <label>
-                <input
-                  required=""
-                  type="text"
-                  class="input"
-                  value={uvalue}
-                  placeholder="Update Value"
-                  // onChange={(e) => setUvalue(e.target.value)}
-                />
-                <span>Value</span>
-              </label>
-              <label>
-                <input
-                  required=""
-                  type="text"
-                  class="input"
-                  value={udefaultValue}
-                  placeholder="Update DefaultValue"
-                  onChange={(e) => setUdefaultValue(e.target.value)}
-                />
-                <span>Default Value</span>
-              </label>
 
               <label>
                 <input
@@ -124,6 +144,7 @@ const EditPermission = () => {
                   class="input"
                   value={uversion}
                   placeholder="Update Version Of Configuration"
+                  onClick={handleClick}
                   // onChange={(e) => setUversion(e.target.value)}
                 />
                 <span>Version</span>
@@ -134,7 +155,7 @@ const EditPermission = () => {
                   style={{ width: "400px" }}
                   onClick={Update_Configuraion_Handel}
                 >
-                  Versionner Configuration
+                  Update Configuration
                 </button>
                 <button
                   class="submit"

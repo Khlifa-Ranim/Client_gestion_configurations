@@ -1,7 +1,7 @@
 
 import React from 'react';
 import {  useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import "..//User/NewUser.css";
 
 
@@ -11,6 +11,8 @@ import Topbar from '../../global/Topbar';
 function FetchPermissionById() {
   const { id } = useParams();
   console.log("id:", id);
+
+  const navigate=useNavigate()
 
   const usertab = useSelector((state) => state.FetchUsersStore);
   const Users=usertab.users;
@@ -32,8 +34,15 @@ function FetchPermissionById() {
     <Sidebar/> 
      <div  className="content">
      <Topbar/>
-    <div className="MainContainer2">
-    <h2 className="WelcomeText">User Details</h2>
+     <div>
+    
+   
+    <div className="MainContainer2" style={{backgroundColor:"white"}}>
+    <button onClick={() => navigate(`/FetchUser`)}className="back-btn">
+              Back
+            </button>
+    <h2 className="WelcomeText" style={{marginBottom:"88px"}}>User Details</h2>
+   
     <div className="InputContainer">
      {user.loading && <div>Chargement.....</div>}
 
@@ -58,6 +67,7 @@ function FetchPermissionById() {
                         ))}
                       </ul>
 
+    </div>
     </div>
     </div>
 

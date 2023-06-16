@@ -53,6 +53,16 @@ import FeatchLogs from "./scences/ComponentsModels/Logs/Logs"
 import FeatchConfigurationVersion from "./scences/ComponentsModels/Configuration_Versions/FeatchConfigurationVersion"
 import VersionnerConfiguration from "./scences/ComponentsModels/Configuration_Versions/VersionnerConfiguration";
 import FeatchConfigurationVersionByID from "./scences/ComponentsModels/Configuration_Versions/FeatchConfigurationVersionById";
+import EditRolePermission from "./scences/ComponentsModels/Roles-Permissions/EditRolePermissions";
+import EditUserRoles from "./scences/ComponentsModels/Users_Roles/EditUserRoles";
+import ForgetPassword from "./scences/ComponentsModels/User/UpdatePassword";
+import FeatchConfigurationDocument from "./scences/ComponentsModels/Configurations/FeatchText_Docoment";
+import Chat from "./scences/ComponentsModels/Chat_App/Chat";
+import Component from "./scences/ComponentsModels/Roles/component";
+import FeatchConfigurationVersionDocument from "./scences/ComponentsModels/Configuration_Versions/FeatchText_Docoment";
+import FeachDefaultConfiguration from "./scences/ComponentsModels/Configuration_Versions/FeactchText_defaultconfiguration";
+
+
 
 
 
@@ -127,6 +137,11 @@ function App() {
                 path="/FeatchConfigurationVersion"
                 element={isAuthenticated ? <FeatchConfigurationVersion /> : <Login />}
               />
+                 <Route
+                path="/chat"
+                element={isAuthenticated ? <Chat/> : <Login />}
+              />
+
 
               <Route
                 path="/newUser"
@@ -171,6 +186,14 @@ function App() {
                 path="/AddConfiguration"
                 element={isAuthenticated ? <AddConfiguration /> : <Login />}
               />
+                <Route
+                path="/ForgetPassword"
+                element={ <ForgetPassword />}
+              />
+                 <Route
+                path="/component"
+                element={ <Component/>}
+              />
               <Route
                 path="/NewProfile"
                 element={isAuthenticated ? <CreateProfiles /> : <Login />}
@@ -196,6 +219,14 @@ function App() {
               <Route
             path="/EditProfile/:id"
             element={isAuthenticated ? <EditProfile /> : <Login />}
+            />
+               <Route
+            path="/EditRolePermission/:id"
+            element={isAuthenticated ? <EditRolePermission /> : <Login />}
+            />
+             <Route
+            path="/EditUserRoles/:id"
+            element={isAuthenticated ? <EditUserRoles /> : <Login />}
             />
             <Route
             path="/VersionnerConfiguration/:id"
@@ -239,6 +270,18 @@ function App() {
                 <Route
                 path="/FeatchConfigurationVersionByID/:id"
                 element={isAuthenticated ? <FeatchConfigurationVersionByID /> : <Login />}
+              />
+                 <Route
+                path="/FeatchConfigurationDocument/:id"
+                element={isAuthenticated ? <FeatchConfigurationDocument /> : <Login />}
+              />
+                  <Route
+                path="/FeatchConfigurationVersionDocument/:id"
+                element={isAuthenticated ? <FeatchConfigurationVersionDocument /> : <Login />}
+              />
+                   <Route
+                path="/FeachDefaultConfiguration/:id"
+                element={isAuthenticated ? <FeachDefaultConfiguration /> : <Login />}
               />
               <Route
                 path="/EditUser/:id"

@@ -17,11 +17,9 @@ export const fetchPermissions= createAsyncThunk("permission/fetchPermissions", a
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   };
-  console.log("Fetching Permissions..."); // <-- add this line to log when Permissions are being fetched
 
   const response = await axios.get("http://localhost:5000/permissions", config);
-  console.log("Permissions fetched:", response.data); // <-- add this line to log the fetched users
-   // return response.data
+  
 
   return response.data.map((permission) => {
     return {

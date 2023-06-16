@@ -16,14 +16,12 @@ export const featchConfigurationsVersion = createAsyncThunk(
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     };
-    console.log("Fetching Configurations Version..."); // <-- add this line to log when Permissions are being fetched
 
     const response = await axios.get(
       "http://localhost:5000/configurationsversion",
       config
     );
-    console.log("Configuration Version fetched:", response.data); // <-- add this line to log the fetched users
-    // return response.data
+   
 
     return response.data.map((Configuration) => {
       return {
@@ -34,6 +32,8 @@ export const featchConfigurationsVersion = createAsyncThunk(
         value: Configuration.value,
         version: Configuration.version,
         id_configuration: Configuration.id_configuration,
+        versionningAt: Configuration.versionningAt,
+
 
       };
     });

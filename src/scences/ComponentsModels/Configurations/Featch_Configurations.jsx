@@ -16,9 +16,13 @@ import {
   featchConfigurations,
   featchConfigurationById,
 } from "../../../redux/ConfigurationSlices/Featch_ConfigurationSlice";
+import {
+  featchConfigurationtextById,
+} from "../../../redux/ConfigurationSlices/FeatchDocumentConfiguration";
 import { deleteConfiguration } from "../../../redux/ConfigurationSlices/DeleteConfigurationSlice";
 import { rollbackConfiguration } from "../../../redux/ConfigurationVersionSlice/RollbackConfiguration";
 import { backupConfigurations } from "../../../redux/ConfigurationVersionSlice/BackUpConfiguration";
+import { featchConfigurationtByDefaultextById } from "../../../redux/ConfigurationSlices/ConfigurationDefaultText"
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -39,9 +43,7 @@ const Roles = () => {
   const Configurations = useSelector(
     (state) => state.Featch_Configurations_Store
   );
-  console.log("Configurations:", Configurations);
   const tabConfigurations = Configurations.TabConfiguration;
-  console.log("tabConfigurations", tabConfigurations);
 
   useEffect(() => {
     dispatch(featchConfigurations());
@@ -50,8 +52,6 @@ const Roles = () => {
   const [roleDeleted, setRoleDeleted] = useState(false); // state variable to keep track of deleted role
 
   const [searchTerm, setSearchTerm] = useState("");
-  console.log(searchTerm);
-
   const sortedTabConfigurations= [...tabConfigurations].sort(
     (a, b) => b.id - a.id
   );
@@ -86,14 +86,31 @@ const Roles = () => {
   };
 
   const FeatchConfigurationById = (id) => {
-    console.log("fetch one Role active");
     const selectedConfiguration = tabConfigurations.find(
       (item) => item.id === id
     );
-    console.log("selectedConfiguration", selectedConfiguration);
     dispatch(featchConfigurationById(id));
     navigate(`/FeatchConfigurationById/${id}`);
   };
+        /*****************Featch_Value_configuration*************** */
+  const FeatchConfigurationTextById = (id) => {
+    const selectedConfiguration = tabConfigurations.find(
+      (item) => item.id === id
+    );
+    dispatch(featchConfigurationtextById(id));
+    navigate(`/FeatchConfigurationDocument/${id}`);
+  };
+
+        /*****************Featch_DefaultValue_configuration*************** */
+
+  const FeatchDefaultConfigurationTextById = (id) => {
+    const selectedConfiguration = tabConfigurations.find(
+      (item) => item.id === id
+    );
+    dispatch(featchConfigurationtByDefaultextById(id));
+    navigate(`/FeachDefaultConfiguration/${id}`);
+  };
+
 
   /***************************delete*************** */
   const [showDialog, setShowDialog] = useState(false);
@@ -102,8 +119,6 @@ const Roles = () => {
 
   const DeleteConfiguration = () => {
     if (selectedRoleId) {
-    console.log("delete Role active");
-    notify(); // display toast notification
     dispatch(deleteConfiguration(selectedRoleId))
       .then(() => setRoleDeleted(true)) // set roleDeleted to true after successful deletion
       .catch((error) => console.log(error));}
@@ -164,11 +179,10 @@ const Roles = () => {
   const columns = [
     { field: "id", headerName: "id", flex: 0.5, hide: true },
     { field: "name", headerName: "name", flex: 0.5 },
-    { field: "description", headerName: "description", flex: 0.5 },
-    { field: "version", headerName: "version", flex: 0.5 },
-    { field: "value", headerName: "value", flex: 0.5 },
-    { field: "defaultValue", headerName: "defaultValue", flex: 0.5 },
-    { field: "createdBy", headerName: "createdBy", flex: 0.5 },
+    { field: "version", headerName: "version", flex: 0 },
+    { field: "createdBy", headerName: "createdBy", flex: 0 , 
+    cellClassName: "name-column--cell",
+  },
 
     { field: "createdAt", headerName: "createdAt" },
     {
@@ -184,12 +198,25 @@ const Roles = () => {
       flex: 2,
 
       renderCell: ({ row }) => {
-        const handleConfirm = () => {
-          setShowDialog(false);
-          DeleteConfiguration(row.id);
-        };
+      
         return (
           <>
+              <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => FeatchDefaultConfigurationTextById(row.id)}
+              style={{ marginRight: "10px", backgroundColor: "#a8e6cf",marginBottom:"18px",marginTop:"2px"}} // add margin-right inline style
+            >
+              Default <br></br>Configuration
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => FeatchConfigurationTextById(row.id)}
+              style={{ marginRight: "10px", backgroundColor: "#a8e6cf",marginBottom:"18px",marginTop:"2px"}} // add margin-right inline style
+            >
+              Value <br></br> Configuration
+            </Button>
             <Button
               variant="contained"
               color="secondary"
@@ -334,11 +361,11 @@ const Roles = () => {
             <Link to={`/VersionnerConfiguration/${row.id}`}>
               <Button
                 variant="contained"
-                color="primary"
                 onClick={() => {
                   // setId(row.id)
                 }}
-                style={{ marginRight: "10px" }} // add margin-right inline style
+                color="primary"
+                style={{ marginRight: "10px",backgroundColor:"#A8E6CF",color:"black",fontStyle:"bold" }} // add margin-right inline style
               >
                 Versionner
               </Button>
@@ -355,6 +382,7 @@ const Roles = () => {
       <div className="content">
         <Topbar />
         <Box m="20px">
+        <ToastContainer />
           <Header title="All Configurations" subtitle="List Of  Configurations" />
 
           <Box
@@ -389,7 +417,6 @@ const Roles = () => {
               },
             }}
           >
-            <ToastContainer />
             <div style={{ position: "relative" }}>
               <input
                 value={searchTerm}
@@ -422,7 +449,7 @@ const Roles = () => {
                     marginLeft: "400px",
                     height: "44px",
                     width: "40%",
-                    backgroundColor: "#86f3b8",
+                    backgroundColor: "#A8E6CF",
                     marginTop: "14px",
                     fontSize: "11px",
                     fontFamily: "Arial",

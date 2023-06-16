@@ -54,7 +54,6 @@ const NewUser = () => {
       verifpassword.trim() !== ""
     ) {
       dispatch(CreateUser({ username, password, role }));
-      // setTimeout(() => Navigate("/FetchUser"), 22); // redirect after 3 seconds
 
     }
   };

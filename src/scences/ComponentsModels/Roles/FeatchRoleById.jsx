@@ -31,7 +31,7 @@ function FeatchRoleById() {
     <Sidebar/> 
      <div  className="content">
      <Topbar/>
-    <div className="MainContainer2">
+    <div className="MainContainer2" style={{backgroundColor:"white"}}>
       <div>
       <button onClick={() => navigate(`/FetchRoles`)} style={{marginLeft:"200px"}}className="back-btn">
               Back

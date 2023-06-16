@@ -42,14 +42,13 @@ function FeatchConfigurationById() {
     <Sidebar/> 
      <div  className="content">
      <Topbar/>
-    <div className="MainContainer2">
+    <div className="MainContainer2" style={{backgroundColor:"white"}}>
         <button  onClick={() => BacktoDashboard()} className="back-btn">Back</button>
 
     <h2 className="WelcomeText" style={{ marginBottom:"18px",color:"#8A8FF7"}}>Configuration Version Details</h2>
       <table style={{ marginLeft:"20px",marginTop:"0px",height:"1200px",width:"600px"}}>
         <tr> <p style={{ color: "#ff347f",fontWeight: "bold" }}>Name : </p> {name}</tr>
         <tr> <p style={{ color: "#ff347f",fontWeight: "bold" }}>Description :</p>{description}</tr>
-        <tr> <p style={{ color: "#ff347f",fontWeight: "bold" }}>Value: </p>{value}</tr>
         <tr> <p style={{ color: "#ff347f",fontWeight: "bold" }}>The Version: </p> {version}</tr>
         <tr> <p style={{ color: "#ff347f",fontWeight: "bold" }}>Updated By :</p> {updatedBy}</tr>
 

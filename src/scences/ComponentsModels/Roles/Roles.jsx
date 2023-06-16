@@ -35,7 +35,6 @@ const Roles = () => {
 
   const dispatch = useDispatch();
   const role = useSelector((state) => state.FetchRolsStore);
-  console.log("role:", role.Roles);
   const roles = role.Roles;
 
   const [roleDeleted, setRoleDeleted] = useState(false); // state variable to keep track of deleted role
@@ -45,16 +44,13 @@ const Roles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAlert, setShowAlert] = useState(false);
 
-  console.log(searchTerm);
 
   const filteredRoless = roles.filter((role) => role.id);
-  console.log("filteredRoles", filteredRoless);
 
   const GetName = () => {
     const role = useSelector((state) => state.FetchRolsStore);
     const roles = role.Roles;
     const Roless = roles.filter((role) => role.name);
-    console.log("Roless", Roless);
     alert("all roles");
   };
 
@@ -126,7 +122,7 @@ const Roles = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "id", flex: 0.5},
+    { field: "id", headerName: "id", flex: 0.5,hide:true},
 
     {
       field: "name",

@@ -36,9 +36,9 @@ function FetchPermissionById() {
       <Sidebar />
       <div className="content">
         <Topbar />
-        <div className="MainContainer22">
-          <h2 className="WelcomeText">
-            Permission Details{" "}
+        <div className="MainContainer22" style={{backgroundColor:"white"}}>
+          <h2 className="WelcomeText"style={{color:"#7980F9",marginBottom:"40px", marginLeft:"300px"}}>
+          {role_name} Details{" "}
             <button onClick={() => navigate(`/FeatchRole_Permission`)} className="back-btn">
               Back
             </button>

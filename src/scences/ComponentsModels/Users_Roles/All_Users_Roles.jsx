@@ -16,11 +16,19 @@ import {
   fetchUsers_Roles,
   featchUsers_RolesById,
 } from "../../../redux/Users_RolesSlice/Featch_Users_RolesSlice";
-import { deleteUserRole } from "../../../redux/Users_RolesSlice/DeleteUser_RolesSlice";
+import { deleteUserRoles } from "../../../redux/Users_RolesSlice/DeleteUserRolesSlice";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { v4 as uuidv4 } from "uuid";
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+
+
 
 const Users_Roles = () => {
   const theme = useTheme();
@@ -33,11 +41,8 @@ const Users_Roles = () => {
   );
   console.log("Users_Roles:", Users_Roles.UsersRoles);
   const Tab_Users_Roles = Users_Roles.UsersRoles;
-  // console.log("Users_Roles:", Tab_Users_Roles); // add this line to check the value of roles_permissions
 
-  const notify = () => {
-    toast(" Delete succeed  👌");
-  };
+
   const sortedTabUserRoles= [...Tab_Users_Roles].sort(
     (a, b) => b.id - a.id
   );
@@ -57,16 +62,24 @@ const Users_Roles = () => {
     navigate(`/FeatchRolesUserById/${id}`);
   };
 
-  const getRowId = (row, index) => {
-    return (index + 1).toString();
+  /************delete***************** */
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedRoleId, setSelectedRoleId] = useState(null);
+  const [roleDeleted, setRoleDeleted] = useState(false); // state variable to keep track of deleted role
+
+  const DeleteUserRoles = () => {
+    if (selectedRoleId) {
+
+    dispatch(deleteUserRoles(selectedRoleId))
+      .then(() => setRoleDeleted(true)) // set roleDeleted to true after successful deletion
+      .catch((error) => console.log(error));
+      setShowDialog(false);
+    }
   };
 
-  const DeleteUsersRoles = (id, roles_ids) => {
-    console.log("delete roleprmission active");
-    // notify(); // display toast notification
-    dispatch(deleteUserRole(id, roles_ids));
-    console.log("id,roles_ids", id, roles_ids);
-    // navigate("/FetchRoles");
+  
+  const handleCancel = () => {
+    setShowDialog(false);
   };
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -124,14 +137,54 @@ const Users_Roles = () => {
               Read
             </Button>
 
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => DeleteUsersRoles(row.id, row.roles_ids)}
-              style={{ marginRight: "10px", backgroundColor: "#FFC0CB" }} // add margin-right inline style
-            >
-              Delete
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => {setShowDialog(true); setSelectedRoleId(row.id);}}
+                style={{ marginRight: "10px", backgroundColor: "#ff8585" }}
+              >
+                Delete
+              </Button>
+
+              <Dialog open={showDialog} onClose={handleCancel}>
+                <DialogTitle
+                  style={{ fontSize: "20px", backgroundColor: "#ff8585" }}
+                >
+                  Are you sure you want to delete this User Roles ?
+                </DialogTitle>
+                <DialogContent style={{ fontSize: "18px" }}>
+                  Confirm Delete
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    style={{ marginRight: "10px", backgroundColor: "#A4A9FC" }}
+                    onClick={DeleteUserRoles}
+                    autoFocus
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    style={{ marginRight: "10px", backgroundColor: "#ff8585" }}
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </>
+            <Link to={`/EditUserRoles/${row.id}`}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  // setId(row.id)
+                }}
+                style={{ marginRight: "10px" }} // add margin-right inline style
+              >
+                Edit
+              </Button>
+            </Link>
           </>
         );
       },
@@ -144,7 +197,7 @@ const Users_Roles = () => {
       <div className="content">
         <Topbar />
         <Box m="20px">
-          <Header title="Roles To user" subtitle="List Roles To user" />
+          <Header title="List of Roles affect to a specific User" subtitle="List of Roles affect to a specific User" />
 
           <Box
             m="40px 0 0 0"
@@ -201,7 +254,7 @@ const Users_Roles = () => {
                 placeholder="Search With Username..."
               />
             </div>
-            <Link to="/AddRoleUsers">
+            {/* <Link to="/AddRoleUsers">
               <Button
                 className="button"
                 variant="contained"
@@ -226,7 +279,7 @@ const Users_Roles = () => {
               >
                 Add one Roles to a User
               </Button>
-            </Link>
+            </Link> */}
             <Link to="/AddManyUsersRoles">
               <Button
                 className="button"
@@ -250,7 +303,7 @@ const Users_Roles = () => {
                   justifyContent: "center",
                 }} // add margin-right inline style
               >
-                Add Many Roles to one User
+                Add  Roles to a specific User
               </Button>
             </Link>
 

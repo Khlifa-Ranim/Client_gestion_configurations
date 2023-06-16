@@ -8,6 +8,21 @@ body,
   height: 100%;
   width: 100%;
   font-family: "Source Sans Pro", sans-serif;
+  background: linear-gradient(to right,#CDD0FD,white);
+  background-size: 400% 400%;
+  animation: animate-background 10s infinite ease-in-out;
+}
+
+@keyframes animate-background {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }
 
 .button_crud{
@@ -136,4 +151,24 @@ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5
 
 .cssbuttons-io-button:active {
   box-shadow: 0 0.3em 1em -0.5em #14a73e98;
+
+
 }
+
+/* .animated-background {
+  background: linear-gradient(to right,#cca8e9,#ffb6b9);
+  background-size: 400% 400%;
+  animation: animate-background 10s infinite ease-in-out;
+}
+
+@keyframes animate-background {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+} */

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import {  useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import "../User/NewUser.css";
 
 
@@ -10,12 +10,8 @@ import Topbar from '../../global/Topbar';
 
 function FetchPermissionById() {
   const { id } = useParams();
-  console.log("id:", id);
-  
-
-
-  
-
+    
+const navigate=useNavigate();
   const Users_Roles = useSelector((state) => state.Featch_Users_Roles_SliceStore);
   console.log("Users_Roles:",Users_Roles);
 
@@ -37,8 +33,11 @@ function FetchPermissionById() {
     <Sidebar/> 
      <div  className="content">
      <Topbar/>
-     <div className="MainContainer2">
-    <h2 className="WelcomeText">Relations Roles To User Details</h2>
+     <div className="MainContainer2" style={{backgroundColor:"white"}}>
+     <button onClick={() => navigate(`/FeatchRolesUsers`)}className="back-btn">
+              Back
+            </button>
+    <h2 className="WelcomeText">Details roles for the user :{username}</h2>
     <div className="InputContainer">
      {userRole.loading && <div>Chargement.....</div>}
 

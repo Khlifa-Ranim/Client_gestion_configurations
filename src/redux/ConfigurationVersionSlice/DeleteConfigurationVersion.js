@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 export const deleteConfigurationVersion = createAsyncThunk(
   "configuration/deleteConfigurationVersion",
   async (id, { rejectWithValue }) => {
+
     try {
       const response = await fetch(
         `http://localhost:5000/deleteversion/${id}`,

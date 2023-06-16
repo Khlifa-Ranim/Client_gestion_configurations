@@ -19,10 +19,8 @@ export const fetchRoles = createAsyncThunk("role/fetchRoles", async () => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   };
-  console.log("Fetching Roles..."); // <-- add this line to log when users are being fetched
 
   const response = await axios.get("http://localhost:5000/roles", config);
-  console.log("Roles fetched:", response.data); // <-- add this line to log the fetched users
  
   return response.data.map((role) => {
     return {

@@ -24,7 +24,6 @@ const EditTypes = () => {
    const navigate=useNavigate();
 
    const TypesUsers = useSelector((state) => state.Featch_Types_Users_SliceStore);
-   console.log("TypesRoles:", TypesUsers);
    const Tab_Types_Users = TypesUsers.storeTypesUsers;
  
    const existingTypeUser=Tab_Types_Users.filter(f=>f.id==id);

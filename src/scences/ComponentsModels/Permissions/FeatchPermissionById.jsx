@@ -38,13 +38,13 @@ const navigate=useNavigate();
     <Sidebar/> 
      <div  className="content">
      <Topbar/>
-    <div className="MainContainer2" >
+    <div className="MainContainer2" style={{backgroundColor:"white"}}>
     <div>
       <button onClick={() => navigate(`/FetchRoles`)} style={{marginLeft:"100px"}}className="back-btn">
               Back
             </button>
     <button onClick={() => navigate(`/FeatchRole_Permission`)} style={{background:"#7980F9"}} className="back-btn">
-              More information about permissions role
+              More information 
             </button>
           </div>
     <h2 className="WelcomeText" style={{color:"#7980F9", marginBottom:"4px"}}>Permission Details</h2>

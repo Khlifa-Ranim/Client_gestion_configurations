@@ -6,6 +6,7 @@ import {CreateUser}  from'../../../redux/UserSlices/NewUser'
 import "../User/NewUser.css";
 import { fetchRoles_permissions } from "../../../redux/Permission_RoleSlice/FeatchPermission_RoleSlice";
 import { fetchTypes_Users} from "../../../redux/Types_UsersSlices/Featch_Types_Users";
+import { useNavigate } from "react-router-dom";
 
 
 const NewUser = () => {    
@@ -32,6 +33,7 @@ const NewUser = () => {
   const filteredRolesPermissions = roles_permissions.filter((role) => role.role_name);
   console.log("filteredRolesPermissions", filteredRolesPermissions);
 
+const Navigate=useNavigate()
   useEffect(() => {
     dispatch(fetchRoles_permissions());
   }, []);
@@ -60,6 +62,8 @@ const CreateUserHandle=(e)=>{
   console.table(username,password,verifpassword,role,type)
   if (Object.keys(formErrors).length === 0 && username.trim() !== '' && password.trim() !== ''&& verifpassword.trim() !== '') {
   dispatch(CreateUser({username,password}))
+  setTimeout(() => Navigate("/FetchUser"), 22000000000000); // redirect after 3 seconds
+
 }
 }
 

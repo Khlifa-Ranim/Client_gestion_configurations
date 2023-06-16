@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { message } from "antd";
 import jwt_decode from "jwt-decode";
 import { toast } from "react-toastify";
+
 const initialState = {
   user: "",
   loading: false,
@@ -24,26 +25,25 @@ export const CreateUser = createAsyncThunk(
       const data = await response.json();
 
       if (!response.ok) {
-        /**************msg error */
         message.error(data.message);
         const { error } = await response.json();
         return rejectWithValue(error);
+      } else {
+        toast.success("User account created successfully");
+        const log = await fetch("http://localhost:5000/logs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            action: `${
+              jwt_decode(localStorage.getItem("token")).username
+            } created an account for ${user.username}`,
+          }),
+        });
+        return data;
       }
-      else {toast.success("User account Created Successffuly");}
-      // ADD LOG
-      const log = await fetch("http://localhost:5000/logs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          action: `${
-            jwt_decode(localStorage.getItem("token")).username
-          } created an account for ${user.username}`,
-        }),
-      });
-      return data;
     } catch (error) {
       console.log(error);
       return rejectWithValue(error.message);
@@ -57,13 +57,13 @@ const CreateUserSlice = createSlice({
 
   reducers: {
     addToken: (state, action) => {},
-
     addUser: (state, action) => {},
   },
   extraReducers: (builder) => {
     builder
       .addCase(CreateUser.pending, (state) => {
         state.loading = true;
+        state.error = null; // Reset error state when starting a request
       })
       .addCase(CreateUser.fulfilled, (state, action) => {
         state.loading = false;
